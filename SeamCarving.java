@@ -39,7 +39,21 @@ public class SeamCarving
         }
 
    private void writepgm(int[][] image, String filename){
-	   
+	   try {
+		   BufferedWriter writer = new BufferedWriter(new FileWriter(new File(filename)));
+		   
+		   for(int i = 0 ; i < image.length ; i++) {
+			   
+			   for(int j = 0 ; j < image[0].length ; j++) {
+				   writer.write(image[i][j]);
+			   }
+		   }
+		   writer.close();
+		   }
+		   catch (IOException e)
+		   {
+		   e.printStackTrace();
+		   }
    }
    
 }
