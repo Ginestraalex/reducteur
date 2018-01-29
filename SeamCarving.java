@@ -40,7 +40,7 @@ public class SeamCarving
 
    private void writepgm(int[][] image, String filename){
 	   try {
-		   BufferedWriter writer = new BufferedWriter(new FileWriter(new File(filename)));
+		   BufferedWriter writer = new BufferedWriter(new FileWriter(new File(filename+".pgm")));
 		   
 		   for(int i = 0 ; i < image.length ; i++) {
 			   
@@ -54,6 +54,13 @@ public class SeamCarving
 		   {
 		   e.printStackTrace();
 		   }
+   }
+   
+   public int[][] interest(int[][] image){
+	   int[][] res = new int[image.length][image[0].length];
+	   //TO-DO
+	   
+	   return res;
    }
    
 }
