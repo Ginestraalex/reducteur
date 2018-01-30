@@ -58,7 +58,22 @@ public class SeamCarving
    
    public int[][] interest(int[][] image){
 	   int[][] res = new int[image.length][image[0].length];
-	   //TO-DO
+	   int moyenne;
+	   
+	   for(int i = 0 ; i < res.length ; i ++) {
+		   for(int j = 0 ; j < res[0].length ; j++) {
+			   if(j == 0) {
+				   moyenne = image[i][1];
+			   }
+			   else if(j == res[0].length-1) {
+				   moyenne = image[i][j-1];
+			   }
+			   else {
+				   moyenne = (image[i][j-1] + image[i][j+1])/2;
+			   }
+			   res[i][j] = Math.abs(moyenne - image[i][j]);
+		   }
+	   }
 	   
 	   return res;
    }
