@@ -38,14 +38,14 @@ public class SeamCarving
         }
         }
 
-   private void writepgm(int[][] image, String filename){
+   private static void writepgm(int[][] image, String filename){
 	   try {
-		   BufferedWriter writer = new BufferedWriter(new FileWriter(new File(filename+".pgm")));
+		   DataOutputStream writer = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(new File(filename))));
 		   
 		   for(int i = 0 ; i < image.length ; i++) {
-			   
 			   for(int j = 0 ; j < image[0].length ; j++) {
-				   writer.write(image[i][j]);
+				   writer.writeInt(image[i][j]);
+				   System.out.println(image[i][j]);
 			   }
 		   }
 		   writer.close();
@@ -54,6 +54,24 @@ public class SeamCarving
 		   {
 		   e.printStackTrace();
 		   }
+	   try {
+		   System.out.println("ici");
+		DataInputStream dis = new DataInputStream( new BufferedInputStream( new FileInputStream( new File(filename))));
+		for(int i = 0 ; i < image.length ; i++) {
+			   for(int j = 0 ; j < image[0].length ; j++) {
+				   try {
+					System.out.println(dis.readInt());
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			   }
+		   }
+		
+	} catch (FileNotFoundException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
    }
    
    public int[][] interest(int[][] image){
@@ -77,5 +95,21 @@ public class SeamCarving
 	   
 	   return res;
    }
+ 
    
+   public static void main(String... args){
+		int[][] im = new int[3][4];
+		for(int i = 0 ; i < im.length ; i++) {
+			for (int j = 0 ; j < im[0].length ; j++) {
+				im[i][j] = i+2*j;
+				System.out.print(im[i][j]+" ");
+			}
+			System.out.print("\n");
+		}
+		
+		SeamCarving.writepgm(im, "monFichier");
+   }
 }
+
+
+
