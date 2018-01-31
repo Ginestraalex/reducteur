@@ -45,7 +45,6 @@ public class SeamCarving
 		   for(int i = 0 ; i < image.length ; i++) {
 			   for(int j = 0 ; j < image[0].length ; j++) {
 				   writer.writeInt(image[i][j]);
-				   System.out.println(image[i][j]);
 			   }
 		   }
 		   writer.close();
@@ -56,7 +55,7 @@ public class SeamCarving
 		   }
    }
    
-   public int[][] interest(int[][] image){
+   public static int[][] interest(int[][] image){
 	   int[][] res = new int[image.length][image[0].length];
 	   int moyenne;
 	   
@@ -72,10 +71,19 @@ public class SeamCarving
 				   moyenne = (image[i][j-1] + image[i][j+1])/2;
 			   }
 			   res[i][j] = Math.abs(moyenne - image[i][j]);
+			   System.out.print(res[i][j]+" ");
 		   }
+		   System.out.println("");
 	   }
 	   
 	   return res;
+   }
+   
+   public Graph tograph(int[][] itr) {
+	   Graph res = new Graph(itr[0].length*itr.length+2);
+	   
+	   return res;
+	   
    }
  
    
@@ -90,6 +98,8 @@ public class SeamCarving
 		}
 		
 		SeamCarving.writepgm(im, "monFichier");
+		SeamCarving.interest(im);
+		
    }
 }
 

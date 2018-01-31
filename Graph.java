@@ -8,6 +8,7 @@ public class Graph
    private ArrayList<Edge>[] adj;
    private final int V;
    int E;
+   
 @SuppressWarnings("unchecked")
    public Graph(int N)
 	 {
