@@ -77,6 +77,14 @@ public class SeamCarving
 	   
 	   return res;
    }
+   
+   public static Graph tograph(int[][] itr){
+	   int hauteur = itr.length;
+	   int largeur = itr[0].length;
+	   Graph graph = new Graph(hauteur * largeur + 2); //+2 expliqué par départ + arriver
+	   return graph;
+	   
+   }
  
    
    public static void main(String... args){
