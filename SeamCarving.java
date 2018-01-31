@@ -54,24 +54,6 @@ public class SeamCarving
 		   {
 		   e.printStackTrace();
 		   }
-	   try {
-		   System.out.println("ici");
-		DataInputStream dis = new DataInputStream( new BufferedInputStream( new FileInputStream( new File(filename))));
-		for(int i = 0 ; i < image.length ; i++) {
-			   for(int j = 0 ; j < image[0].length ; j++) {
-				   try {
-					System.out.println(dis.readInt());
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			   }
-		   }
-		
-	} catch (FileNotFoundException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
    }
    
    public int[][] interest(int[][] image){
