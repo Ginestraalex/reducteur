@@ -79,11 +79,37 @@ public class SeamCarving
 	   return res;
    }
    
-   public Graph tograph(int[][] itr) {
-	   Graph res = new Graph(itr[0].length*itr.length+2);
-	   
-	   return res;
-	   
+   public Graph tograph(int[][] itr) { // a reverifier
+	   int hauteur = itr.length;
+	   int largeur = itr[0].length;
+	   Graph graph = new Graph(largeur*hauteur+2); //+2 expliqué par départ + arriver
+	   int[][] interet = this.interest(itr);
+	   for(int i = 0 ; i < largeur ; i++)
+	   {
+		   graph.addEdge(new Edge(0, i+1, 0)); //from the top to the first floor
+	   }
+	   for(int i = 0 ; i < hauteur-1 ; i++) {
+		   for(int j = 0 ; j < largeur ; j++) {
+			   	if(j == 0){
+			   		graph.addEdge(new Edge(i*largeur+2, (i+1)*largeur+2, interet[i][j]));
+			   		graph.addEdge(new Edge(i*largeur+2, (i+1)*largeur+3, interet[i][j]));
+			   	}
+			   	else if(j == largeur-1) {
+			   		graph.addEdge(new Edge(i*largeur+2+j, (i+1)*largeur+1, interet[i][j]));
+			   		graph.addEdge(new Edge(i*largeur+2+j, (i+1)*largeur+2, interet[i][j]));
+			   	}
+			   	else{
+			   		graph.addEdge(new Edge(i*largeur+2+j, (i+1)*largeur+1, interet[i][j]));
+			   		graph.addEdge(new Edge(i*largeur+2+j, (i+1)*largeur+2, interet[i][j]));
+			   		graph.addEdge(new Edge(i*largeur+2+j, (i+1)*largeur+3, interet[i][j]));
+			   	}
+		   }
+	   }
+	   for(int i = 0 ; i < largeur ; i++) {
+		   graph.addEdge(new Edge(largeur*(hauteur-1)+1, graph.vertices()-1, interet[hauteur-1][i]));
+	   }
+	   return graph;
+
    }
  
    
