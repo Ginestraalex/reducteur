@@ -84,6 +84,7 @@ public class SeamCarving
 	   int largeur = itr[0].length;
 	   Graph graph = new Graph(largeur*hauteur+2); //+2 expliqué par départ + arriver
 	   int[][] interet = this.interest(itr);
+	   
 	   for(int i = 0 ; i < largeur ; i++)
 	   {
 		   graph.addEdge(new Edge(0, i+1, 0)); //from the top to the first floor
