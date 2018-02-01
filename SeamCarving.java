@@ -82,7 +82,7 @@ public class SeamCarving
    }
    
    
-   public Graph tograph(int[][] itr) { // a reverifier
+   public Graph tograph(int[][] itr) { 
 	   int hauteur = itr.length;
 	   int largeur = itr[0].length;
 	   Graph graph = new Graph(largeur*hauteur+2); //+2 expliqué par départ + arriver
