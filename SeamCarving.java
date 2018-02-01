@@ -38,6 +38,7 @@ public class SeamCarving
         }
         }
 
+	
    private static void writepgm(int[][] image, String filename){
 	   try {
 		   DataOutputStream writer = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(new File(filename))));
@@ -54,6 +55,7 @@ public class SeamCarving
 		   e.printStackTrace();
 		   }
    }
+   
    
    public static int[][] interest(int[][] image){
 	   int[][] res = new int[image.length][image[0].length];
@@ -78,6 +80,7 @@ public class SeamCarving
 	   
 	   return res;
    }
+   
    
    public Graph tograph(int[][] itr) { // a reverifier
 	   int hauteur = itr.length;
@@ -110,7 +113,11 @@ public class SeamCarving
 		   graph.addEdge(new Edge(largeur*(hauteur-1)+1, graph.vertices()-1, interet[hauteur-1][i]));
 	   }
 	   return graph;
-
+   }
+   
+   
+   public void Dijkstra(Graph g, int s, int t) {
+	   
    }
  
    
