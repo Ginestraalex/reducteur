@@ -82,35 +82,37 @@ public class SeamCarving
    }
    
    
-   public Graph tograph(int[][] itr) { 
+   public static Graph tograph(int[][] itr) { 
 	   int hauteur = itr.length;
 	   int largeur = itr[0].length;
 	   Graph graph = new Graph(largeur*hauteur+2); //+2 expliqué par départ + arriver
-	   int[][] interet = this.interest(itr);
+	   int[][] interet = SeamCarving.interest(itr);
 	   
 	   for(int i = 0 ; i < largeur ; i++)
 	   {
 		   graph.addEdge(new Edge(0, i+1, 0)); //from the top to the first floor
 	   }
+	   
 	   for(int i = 0 ; i < hauteur-1 ; i++) {
 		   for(int j = 0 ; j < largeur ; j++) {
 			   	if(j == 0){
-			   		graph.addEdge(new Edge(i*largeur+2, (i+1)*largeur+2, interet[i][j]));
-			   		graph.addEdge(new Edge(i*largeur+2, (i+1)*largeur+3, interet[i][j]));
+			   		graph.addEdge(new Edge(i*largeur+1, (i+1)*largeur+1, interet[i][j]));
+			   		graph.addEdge(new Edge(i*largeur+1, (i+1)*largeur+2, interet[i][j]));
 			   	}
 			   	else if(j == largeur-1) {
-			   		graph.addEdge(new Edge(i*largeur+2+j, (i+1)*largeur+1, interet[i][j]));
-			   		graph.addEdge(new Edge(i*largeur+2+j, (i+1)*largeur+2, interet[i][j]));
+			   		graph.addEdge(new Edge(i*largeur+1+j, (i+1)*largeur+j, interet[i][j]));
+			   		graph.addEdge(new Edge(i*largeur+1+j, (i+1)*largeur+1+j, interet[i][j]));
 			   	}
 			   	else{
-			   		graph.addEdge(new Edge(i*largeur+2+j, (i+1)*largeur+1, interet[i][j]));
-			   		graph.addEdge(new Edge(i*largeur+2+j, (i+1)*largeur+2, interet[i][j]));
-			   		graph.addEdge(new Edge(i*largeur+2+j, (i+1)*largeur+3, interet[i][j]));
+			   		graph.addEdge(new Edge(i*largeur+1+j, (i+1)*largeur+j, interet[i][j]));
+			   		graph.addEdge(new Edge(i*largeur+1+j, (i+1)*largeur+1+j, interet[i][j]));
+			   		graph.addEdge(new Edge(i*largeur+1+j, (i+1)*largeur+2+j, interet[i][j]));
 			   	}
 		   }
 	   }
+	   
 	   for(int i = 0 ; i < largeur ; i++) {
-		   graph.addEdge(new Edge(largeur*(hauteur-1)+1, graph.vertices()-1, interet[hauteur-1][i]));
+		   graph.addEdge(new Edge(largeur*(hauteur-1)+i+1, graph.vertices()-1, interet[hauteur-1][i]));
 	   }
 	   return graph;
    }
@@ -157,9 +159,10 @@ public class SeamCarving
 			}
 			System.out.print("\n");
 		}
-		
+		System.out.print("\n");
+
 		SeamCarving.writepgm(im, "monFichier");
-		SeamCarving.interest(im);
+		Graph graph = SeamCarving.tograph(im);
 		
    }
 }
