@@ -116,8 +116,35 @@ public class SeamCarving
    }
    
    
-   public void Dijkstra(Graph g, int s, int t) {
-	   
+   public ArrayList<Edge> Dijkstra(Graph g, int s, int t) {
+	   ArrayList<Edge> chemin= new ArrayList<>();
+	   Heap hp= new Heap(g.vertices());
+	   boolean[] estVisite= new boolean[g.vertices()];
+	   Edge[] parcours= new Edge[g.vertices()];
+	   int ex = 0;
+	   int parcouru = t;
+	   // initialisation 
+	   for(int i = 0 ; i < g.vertices() ; i++) {
+		   estVisite[i] = false;
+	   }
+	   hp.decreaseKey(0 , 0);
+	   while( !( hp.isEmpty() ) ){
+		   ex = hp.pop();
+		   estVisite[ex] = true;
+		   for(Edge ed : g.next(ex)) {
+			   if( !( estVisite[ed.to] ) ) {
+				   if( (hp.priority(ed.from) + ed.cost) < hp.priority(ed.to) ) {
+					   hp.decreaseKey(ed.to , ed.cost + hp.priority(ed.from) );
+					   parcours[ed.to] = ed;
+				   }
+			   }
+		   }
+	   }
+	   while( s != parcouru) {
+		  chemin.add(parcours[parcouru]);
+		  parcouru = parcours[parcouru].from;
+	   }
+	   return chemin;
    }
  
    
