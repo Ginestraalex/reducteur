@@ -7,7 +7,12 @@ import java.util.*;
 public class SeamCarving
 {
 
-	public static int[][] readpgm(String fn)
+	public SeamCarving(){
+		
+	}
+	
+	
+	public int[][] readpgm(String fn)
 	 {		
         try {
             InputStream f = ClassLoader.getSystemClassLoader().getResourceAsStream(fn);
@@ -39,7 +44,7 @@ public class SeamCarving
         }
 
 	
-   private static void writepgm(int[][] image, String filename){
+   private void writepgm(int[][] image, String filename){
 	   try {
 		   DataOutputStream writer = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(new File(filename))));
 		   
@@ -57,7 +62,7 @@ public class SeamCarving
    }
    
    
-   public static int[][] interest(int[][] image){
+   public int[][] interest(int[][] image){
 	   int[][] res = new int[image.length][image[0].length];
 	   int moyenne;
 	   
@@ -82,11 +87,10 @@ public class SeamCarving
    }
    
    
-   public static Graph tograph(int[][] itr) { 
+   public Graph tograph(int[][] itr) { 
 	   int hauteur = itr.length;
 	   int largeur = itr[0].length;
 	   Graph graph = new Graph(largeur*hauteur+2); //+2 expliqué par départ + arriver
-	   int[][] interet = SeamCarving.interest(itr);
 	   
 	   for(int i = 0 ; i < largeur ; i++)
 	   {
@@ -96,36 +100,36 @@ public class SeamCarving
 	   for(int i = 0 ; i < hauteur-1 ; i++) {
 		   for(int j = 0 ; j < largeur ; j++) {
 			   	if(j == 0){
-			   		graph.addEdge(new Edge(i*largeur+1, (i+1)*largeur+1, interet[i][j]));
-			   		graph.addEdge(new Edge(i*largeur+1, (i+1)*largeur+2, interet[i][j]));
+			   		graph.addEdge(new Edge(i*largeur+1, (i+1)*largeur+1, itr[i][j]));
+			   		graph.addEdge(new Edge(i*largeur+1, (i+1)*largeur+2, itr[i][j]));
 			   	}
 			   	else if(j == largeur-1) {
-			   		graph.addEdge(new Edge(i*largeur+1+j, (i+1)*largeur+j, interet[i][j]));
-			   		graph.addEdge(new Edge(i*largeur+1+j, (i+1)*largeur+1+j, interet[i][j]));
+			   		graph.addEdge(new Edge(i*largeur+1+j, (i+1)*largeur+j, itr[i][j]));
+			   		graph.addEdge(new Edge(i*largeur+1+j, (i+1)*largeur+1+j, itr[i][j]));
 			   	}
 			   	else{
-			   		graph.addEdge(new Edge(i*largeur+1+j, (i+1)*largeur+j, interet[i][j]));
-			   		graph.addEdge(new Edge(i*largeur+1+j, (i+1)*largeur+1+j, interet[i][j]));
-			   		graph.addEdge(new Edge(i*largeur+1+j, (i+1)*largeur+2+j, interet[i][j]));
+			   		graph.addEdge(new Edge(i*largeur+1+j, (i+1)*largeur+j, itr[i][j]));
+			   		graph.addEdge(new Edge(i*largeur+1+j, (i+1)*largeur+1+j, itr[i][j]));
+			   		graph.addEdge(new Edge(i*largeur+1+j, (i+1)*largeur+2+j, itr[i][j]));
 			   	}
 		   }
 	   }
 	   
 	   for(int i = 0 ; i < largeur ; i++) {
-		   graph.addEdge(new Edge(largeur*(hauteur-1)+i+1, graph.vertices()-1, interet[hauteur-1][i]));
+		   graph.addEdge(new Edge(largeur*(hauteur-1)+i+1, graph.vertices()-1, itr[hauteur-1][i]));
 	   }
 	   return graph;
    }
    
    
    public ArrayList<Edge> Dijkstra(Graph g, int s, int t) {
-	   ArrayList<Edge> chemin= new ArrayList<>();
-	   Heap hp= new Heap(g.vertices());
-	   boolean[] estVisite= new boolean[g.vertices()];
-	   Edge[] parcours= new Edge[g.vertices()];
+	   ArrayList<Edge> chemin= new ArrayList<Edge>();
+	   Heap hp = new Heap(g.vertices());
+	   boolean[] estVisite = new boolean[g.vertices()];
+	   Edge[] parcours = new Edge[g.vertices()];
 	   int ex = 0;
 	   int parcouru = t;
-	   // initialisation 
+	   // initialisation du tableau des sommets visités
 	   for(int i = 0 ; i < g.vertices() ; i++) {
 		   estVisite[i] = false;
 	   }
@@ -151,6 +155,7 @@ public class SeamCarving
  
    
    public static void main(String... args){
+	   SeamCarving sc = new SeamCarving();
 		int[][] im = new int[3][4];
 		for(int i = 0 ; i < im.length ; i++) {
 			for (int j = 0 ; j < im[0].length ; j++) {
@@ -161,8 +166,8 @@ public class SeamCarving
 		}
 		System.out.print("\n");
 
-		SeamCarving.writepgm(im, "monFichier");
-		Graph graph = SeamCarving.tograph(im);
+		sc.writepgm(im, "monFichier");
+		Graph graph = sc.tograph(im);
 		
    }
 }
