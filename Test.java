@@ -1,5 +1,8 @@
 package reducteur;
 
+import java.time.Clock;
+import java.util.ArrayList;
+
 class Test
 {
    static boolean visite[];
@@ -57,9 +60,12 @@ class Test
 		dfs(g, 3);
 	 }
    
+  
+   
+   
    public static void main(String[] args)
 	 {
-		testHeap();
-		testGraph();
+	   	 testHeap();
+	   	 testGraph();
 	 }
 }

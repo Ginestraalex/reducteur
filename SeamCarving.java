@@ -12,7 +12,7 @@ public class SeamCarving
 	}
 	
 	
-	public int[][] readpgm(String fn)
+	public static int[][] readpgm(String fn)
 	 {		
         try {
             InputStream f = ClassLoader.getSystemClassLoader().getResourceAsStream(fn);
@@ -44,7 +44,7 @@ public class SeamCarving
         }
 
 	
-   private void writepgm(int[][] image, String filename){
+   public static void writepgm(int[][] image, String filename){
 	   try {
 		   DataOutputStream writer = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(new File(filename))));
 		   
@@ -62,7 +62,9 @@ public class SeamCarving
    }
    
    
-   public int[][] interest(int[][] image){
+   
+   
+   public static int[][] interest(int[][] image){
 	   int[][] res = new int[image.length][image[0].length];
 	   int moyenne;
 	   
@@ -87,7 +89,7 @@ public class SeamCarving
    }
    
    
-   public Graph tograph(int[][] itr) { 
+   public static Graph tograph(int[][] itr) { 
 	   int hauteur = itr.length;
 	   int largeur = itr[0].length;
 	   Graph graph = new Graph(largeur*hauteur+2); //+2 expliqué par départ + arriver
@@ -122,7 +124,7 @@ public class SeamCarving
    }
    
    
-   public ArrayList<Edge> Dijkstra(Graph g, int s, int t) {
+   public static ArrayList<Edge> Dijkstra1(Graph g, int s, int t) {
 	   ArrayList<Edge> chemin= new ArrayList<Edge>();
 	   Heap hp = new Heap(g.vertices());
 	   boolean[] estVisite = new boolean[g.vertices()];
@@ -152,6 +154,38 @@ public class SeamCarving
 	   }
 	   return chemin;
    }
+   
+   public static ArrayList<Integer> Dijkstra(Graph g, int s, int t) {
+	   ArrayList<Integer> chemin= new ArrayList<Integer>();
+	   Heap hp = new Heap(g.vertices());
+	   boolean[] estVisite = new boolean[g.vertices()];
+	   int[] parcours = new int[g.vertices()];
+	   int ex = 0;
+	   int parcouru = t;
+	   // initialisation du tableau des sommets visités
+	   for(int i = 0 ; i < g.vertices() ; i++) {
+		   estVisite[i] = false;
+	   }
+	   hp.decreaseKey(0 , 0);
+	   while( !( hp.isEmpty() ) ){
+		   ex = hp.pop();
+		   estVisite[ex] = true;
+		   for(Edge ed : g.next(ex)) {
+			   if( !( estVisite[ed.to] ) ) {
+				   if( (hp.priority(ed.from) + ed.cost) < hp.priority(ed.to) ) {
+					   hp.decreaseKey(ed.to , ed.cost + hp.priority(ed.from) );
+					   parcours[ed.to] = ed.from;
+				   }
+			   }
+		   }
+	   }
+	   while( s != parcouru) {
+		  chemin.add(parcours[parcouru]);
+		  parcouru = parcours[parcouru];
+	   }
+	   return chemin;
+   }
+   
  
    
    public static void main(String... args){
