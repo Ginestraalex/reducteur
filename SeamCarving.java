@@ -46,11 +46,16 @@ public class SeamCarving
 	
    public static void writepgm(int[][] image, String filename){
 	   try {
-		   DataOutputStream writer = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(new File(filename))));
+		   Writer writer = new BufferedWriter(new FileWriter(filename));
 		   
+		   writer.write("P2\n");
+		   writer.write(""+image[0].length);
+		   writer.write(" "+image.length);
+		   writer.write("\n255");
 		   for(int i = 0 ; i < image.length ; i++) {
+			   writer.write("\n");
 			   for(int j = 0 ; j < image[0].length ; j++) {
-				   writer.writeInt(image[i][j]);
+				   writer.write(image[i][j]+" ");
 			   }
 		   }
 		   writer.close();
@@ -190,11 +195,18 @@ public class SeamCarving
    
    public void reducePict(String nameFile) {
 	   int[][] im = this.readpgm(nameFile);
+	   for(int i = 0 ; i < im.length ; i++) {
+		   for(int j = 0 ; i < im[0].length ; j++) {
+			   System.out.println(im[i][j]+"  ");
+		   }
+		   System.out.println("");
+	   }
 	   Graph graph = this.tograph(this.interest(im));
 		ArrayList<Integer> array = this.Dijkstra(graph, 0, graph.vertices()-1);
 		int[][] newIm = new int[im.length][im[0].length-1];
 		
-		
+		System.out.println("");
+
 		int k;
 		int l = array.size()-1;
 		for(int i = 0 ; i < im.length ; i++) {
@@ -206,7 +218,7 @@ public class SeamCarving
 				}
 				else {
 					newIm[i][k] = im[i][j];
-					System.out.print(newIm[i][k]);
+					System.out.print(newIm[i][k]+" ");
 					k++;
 				}
 			}
@@ -218,12 +230,7 @@ public class SeamCarving
    
    public static void main(String... args){
 	   SeamCarving sc = new SeamCarving();
-	   if(args.length == 1) {
-		   sc.reducePict(args[0]);
-	   }
-	   else {
-		   System.out.println("Il faut donner le nom du fichier a reduire en parametre");
-	   }
+	   sc.reducePict("./image/test.pgm");
 	   
 	   
 	   

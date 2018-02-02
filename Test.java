@@ -1,8 +1,5 @@
 package reducteur;
 
-import java.time.Clock;
-import java.util.ArrayList;
-
 class Test
 {
    static boolean visite[];
