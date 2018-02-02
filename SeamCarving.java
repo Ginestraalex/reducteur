@@ -169,17 +169,19 @@ public class SeamCarving
 	   hp.decreaseKey(0 , 0);
 	   while( !( hp.isEmpty() ) ){
 		   ex = hp.pop();
+
 		   estVisite[ex] = true;
 		   for(Edge ed : g.next(ex)) {
 			   if( !( estVisite[ed.to] ) ) {
-				   if( (hp.priority(ed.from) + ed.cost) < hp.priority(ed.to) ) {
-					   hp.decreaseKey(ed.to , ed.cost + hp.priority(ed.from) );
+				   if( (hp.priority(ex) + ed.cost) < hp.priority(ed.to) ) {
+					   hp.decreaseKey(ed.to , ed.cost + hp.priority(ex) );
 					   parcours[ed.to] = ed.from;
 				   }
 			   }
 		   }
 	   }
 	   while( s != parcouru) {
+		  System.out.println("from: " + parcours[parcouru]);
 		  chemin.add(parcours[parcouru]);
 		  parcouru = parcours[parcouru];
 	   }
@@ -201,7 +203,9 @@ public class SeamCarving
 		System.out.print("\n");
 
 		sc.writepgm(im, "monFichier");
-		Graph graph = sc.tograph(im);
+		
+		Graph graph = sc.tograph(sc.interest(im));
+		ArrayList<Integer> array = sc.Dijkstra(graph, 0, graph.vertices()-1);
 		
    }
 }

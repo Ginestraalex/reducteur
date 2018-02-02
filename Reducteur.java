@@ -17,7 +17,7 @@ public class Reducteur {
 			int[][] tabImage = sc.readpgm(args[0]);
 			int[][] itr = sc.interest(tabImage);
 			Graph gr = sc.tograph(itr);
-			ArrayList<Edge>parcourt = sc.Dijkstra(gr, 0, gr.vertices()-1);
+			ArrayList<Integer>parcourt = sc.Dijkstra(gr, 0, gr.vertices()-1);
 		}
 	}
 }
