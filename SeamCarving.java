@@ -3,6 +3,8 @@ package reducteur;
 import java.io.*;
 import java.util.*;
 
+import javax.swing.JOptionPane;
+
 
 public class SeamCarving
 {
@@ -199,43 +201,48 @@ public class SeamCarving
    }
    
    
-   public void reducePict(String nameFile, boolean isAbsolutePath) {
+   public void reducePict(String nameFile, boolean isAbsolutePath, int nbFois) {
 	   int[][] im = this.readpgm(nameFile, isAbsolutePath);
-	   Graph graph = this.tograph(this.interest(im));
-	   ArrayList<Integer> array = this.Dijkstra(graph, 0, graph.vertices()-1);
-	   int[][] newIm = new int[im.length][im[0].length-1];
+	   if(nbFois >= im[0].length) {
+		   JOptionPane.showMessageDialog(null,
+				    "You are asking impossible things (too much times for the picture's size.",
+				    "Error",
+				    JOptionPane.ERROR_MESSAGE);
+	   }
+	   else {
+		   int[][] newIm = null;
+		   for(int r = 0 ; r < nbFois ; r++) {
+			   Graph graph = this.tograph(this.interest(im));
+			   ArrayList<Integer> array = this.Dijkstra(graph, 0, graph.vertices()-1);
+			   newIm = new int[im.length][im[0].length-1];
+				
 		
-
-		int k;
-		int l = array.size()-1;
-		for(int i = 0 ; i < im.length ; i++) {
-			k = 0;
-			for(int j = 0 ; j < im[0].length ; j++) {
-				if(l > 0 && i*im[0].length+j == array.get(l-1)-1) {
-					l--;
+				int k;
+				int l = array.size()-1;
+				for(int i = 0 ; i < im.length ; i++) {
+					k = 0;
+					for(int j = 0 ; j < im[0].length ; j++) {
+						if(l > 0 && i*im[0].length+j == array.get(l-1)-1) {
+							l--;
+						}
+						else {
+							newIm[i][k] = im[i][j];
+							k++;
+						}
+					}
 				}
-				else {
-					newIm[i][k] = im[i][j];
-					k++;
-				}
-			}
-		}
-		
-
-		this.writepgm(newIm, "monFichier.pgm");
+				im = newIm;
+		   	}
+			this.writepgm(newIm, "monFichier.pgm");
+	   }
    }
  
    
-   public static void main(String... args){
+   /*public static void main(String... args){
 	   SeamCarving sc = new SeamCarving();
 	   sc.reducePict("./image/test.pgm", false);
 	   
-	   
-	   
-	   
-	   
-	   
-		/*int[][] im = new int[3][4];
+		int[][] im = new int[3][4];
 		for(int i = 0 ; i < im.length ; i++) {
 			for (int j = 0 ; j < im[0].length ; j++) {
 				im[i][j] = i+2*j;
@@ -267,9 +274,9 @@ public class SeamCarving
 			}
 			System.out.println("");
 		}
-		sc.writepgm(newIm, "monFichier.pgm");*/
+		sc.writepgm(newIm, "monFichier.pgm");
 
-   }
+   }*/
 }
 
 
