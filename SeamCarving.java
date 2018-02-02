@@ -202,8 +202,8 @@ public class SeamCarving
    public void reducePict(String nameFile, boolean isAbsolutePath) {
 	   int[][] im = this.readpgm(nameFile, isAbsolutePath);
 	   Graph graph = this.tograph(this.interest(im));
-		ArrayList<Integer> array = this.Dijkstra(graph, 0, graph.vertices()-1);
-		int[][] newIm = new int[im.length][im[0].length-1];
+	   ArrayList<Integer> array = this.Dijkstra(graph, 0, graph.vertices()-1);
+	   int[][] newIm = new int[im.length][im[0].length-1];
 		
 
 		int k;
