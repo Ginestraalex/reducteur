@@ -205,7 +205,7 @@ public class SeamCarving
 	   int[][] im = this.readpgm(nameFile, isAbsolutePath);
 	   if(nbFois >= im[0].length) {
 		   JOptionPane.showMessageDialog(null,
-				    "You are asking impossible things (too much times for the picture's size.",
+				    "You are asking impossible things (too much times for the picture's size).",
 				    "Error",
 				    JOptionPane.ERROR_MESSAGE);
 	   }
@@ -233,7 +233,7 @@ public class SeamCarving
 				}
 				im = newIm;
 		   	}
-			this.writepgm(newIm, "monFichier.pgm");
+			writepgm(newIm, "monFichier.pgm");
 	   }
    }
  
