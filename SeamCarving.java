@@ -173,15 +173,14 @@ public class SeamCarving
 		   estVisite[ex] = true;
 		   for(Edge ed : g.next(ex)) {
 			   if( !( estVisite[ed.to] ) ) {
-				   if( (hp.priority(ex) + ed.cost) < hp.priority(ed.to) ) {
-					   hp.decreaseKey(ed.to , ed.cost + hp.priority(ex) );
+				   if( (hp.priority(ed.from) + ed.cost) < hp.priority(ed.to) ) {
+					   hp.decreaseKey(ed.to , ed.cost + hp.priority(ed.from) );
 					   parcours[ed.to] = ed.from;
 				   }
 			   }
 		   }
 	   }
 	   while( s != parcouru) {
-		  System.out.println("from: " + parcours[parcouru]);
 		  chemin.add(parcours[parcouru]);
 		  parcouru = parcours[parcouru];
 	   }
@@ -202,11 +201,30 @@ public class SeamCarving
 		}
 		System.out.print("\n");
 
-		sc.writepgm(im, "monFichier");
-		
 		Graph graph = sc.tograph(sc.interest(im));
 		ArrayList<Integer> array = sc.Dijkstra(graph, 0, graph.vertices()-1);
+		int[][] newIm = new int[im.length][im[0].length-1];
 		
+		
+		int k;
+		int l = array.size()-1;
+		for(int i = 0 ; i < im.length ; i++) {
+			for(int j = 0 ; j < im[0].length ; j++) {
+				k = 0;
+				if(l > 0 && i*im[0].length+j == array.get(l-1)-1) {
+					l--;
+					k++;
+				}
+				else {
+					newIm[i][k] = im[i][j];
+					System.out.print(newIm[i][k]);
+					k++;
+				}
+			}
+			System.out.println("");
+		}
+		sc.writepgm(newIm, "monFichier.pgm");
+
    }
 }
 
