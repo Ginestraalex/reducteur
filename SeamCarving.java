@@ -12,10 +12,17 @@ public class SeamCarving
 	}
 	
 	
-	public static int[][] readpgm(String fn)
+	public static int[][] readpgm(String fn, boolean absolutePath)
 	 {		
         try {
-            InputStream f = ClassLoader.getSystemClassLoader().getResourceAsStream(fn);
+            InputStream f;
+        	if(absolutePath) {
+        		f = new FileInputStream(fn);
+        	}
+        	else {
+        		f = ClassLoader.getSystemClassLoader().getResourceAsStream(fn);
+
+        	}
             BufferedReader d = new BufferedReader(new InputStreamReader(f));
             String magic = d.readLine();
             String line = d.readLine();
@@ -192,8 +199,8 @@ public class SeamCarving
    }
    
    
-   public void reducePict(String nameFile) {
-	   int[][] im = this.readpgm(nameFile);
+   public void reducePict(String nameFile, boolean isAbsolutePath) {
+	   int[][] im = this.readpgm(nameFile, isAbsolutePath);
 	   Graph graph = this.tograph(this.interest(im));
 		ArrayList<Integer> array = this.Dijkstra(graph, 0, graph.vertices()-1);
 		int[][] newIm = new int[im.length][im[0].length-1];
@@ -221,7 +228,7 @@ public class SeamCarving
    
    public static void main(String... args){
 	   SeamCarving sc = new SeamCarving();
-	   sc.reducePict("./image/test.pgm");
+	   sc.reducePict("./image/test.pgm", false);
 	   
 	   
 	   
