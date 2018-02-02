@@ -187,11 +187,50 @@ public class SeamCarving
 	   return chemin;
    }
    
+   
+   public void reducePict(String nameFile) {
+	   int[][] im = this.readpgm(nameFile);
+	   Graph graph = this.tograph(this.interest(im));
+		ArrayList<Integer> array = this.Dijkstra(graph, 0, graph.vertices()-1);
+		int[][] newIm = new int[im.length][im[0].length-1];
+		
+		
+		int k;
+		int l = array.size()-1;
+		for(int i = 0 ; i < im.length ; i++) {
+			for(int j = 0 ; j < im[0].length ; j++) {
+				k = 0;
+				if(l > 0 && i*im[0].length+j == array.get(l-1)-1) {
+					l--;
+					k++;
+				}
+				else {
+					newIm[i][k] = im[i][j];
+					System.out.print(newIm[i][k]);
+					k++;
+				}
+			}
+			System.out.println("");
+		}
+		this.writepgm(newIm, "monFichier.pgm");
+   }
  
    
    public static void main(String... args){
 	   SeamCarving sc = new SeamCarving();
-		int[][] im = new int[3][4];
+	   if(args.length == 1) {
+		   sc.reducePict(args[0]);
+	   }
+	   else {
+		   System.out.println("Il faut donner le nom du fichier a reduire en parametre");
+	   }
+	   
+	   
+	   
+	   
+	   
+	   
+		/*int[][] im = new int[3][4];
 		for(int i = 0 ; i < im.length ; i++) {
 			for (int j = 0 ; j < im[0].length ; j++) {
 				im[i][j] = i+2*j;
@@ -223,7 +262,7 @@ public class SeamCarving
 			}
 			System.out.println("");
 		}
-		sc.writepgm(newIm, "monFichier.pgm");
+		sc.writepgm(newIm, "monFichier.pgm");*/
 
    }
 }
