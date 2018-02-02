@@ -57,6 +57,7 @@ public class SeamCarving
 			   for(int j = 0 ; j < image[0].length ; j++) {
 				   writer.write(image[i][j]+" ");
 			   }
+
 		   }
 		   writer.close();
 		   }
@@ -85,9 +86,7 @@ public class SeamCarving
 				   moyenne = (image[i][j-1] + image[i][j+1])/2;
 			   }
 			   res[i][j] = Math.abs(moyenne - image[i][j]);
-			   System.out.print(res[i][j]+" ");
 		   }
-		   System.out.println("");
 	   }
 	   
 	   return res;
@@ -195,35 +194,27 @@ public class SeamCarving
    
    public void reducePict(String nameFile) {
 	   int[][] im = this.readpgm(nameFile);
-	   for(int i = 0 ; i < im.length ; i++) {
-		   for(int j = 0 ; i < im[0].length ; j++) {
-			   System.out.println(im[i][j]+"  ");
-		   }
-		   System.out.println("");
-	   }
 	   Graph graph = this.tograph(this.interest(im));
 		ArrayList<Integer> array = this.Dijkstra(graph, 0, graph.vertices()-1);
 		int[][] newIm = new int[im.length][im[0].length-1];
 		
-		System.out.println("");
 
 		int k;
 		int l = array.size()-1;
 		for(int i = 0 ; i < im.length ; i++) {
+			k = 0;
 			for(int j = 0 ; j < im[0].length ; j++) {
-				k = 0;
 				if(l > 0 && i*im[0].length+j == array.get(l-1)-1) {
 					l--;
-					k++;
 				}
 				else {
 					newIm[i][k] = im[i][j];
-					System.out.print(newIm[i][k]+" ");
 					k++;
 				}
 			}
-			System.out.println("");
 		}
+		
+
 		this.writepgm(newIm, "monFichier.pgm");
    }
  
