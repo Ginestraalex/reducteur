@@ -79,6 +79,28 @@ public class SeamCarving
    
    
    
+   public static int[][] interestHorizontal(int[][] image){
+	   int[][] res = new int[image.length][image[0].length];
+	   int moyenne;
+	   
+	   for(int i = 0 ; i < res[0].length ; i ++) {
+		   for(int j = 0 ; j < res.length ; j++) {
+			   if(j == 0) {
+				   moyenne = image[1][i];
+			   }
+			   else if(j == res.length-1) {
+				   moyenne = image[j-1][i];
+			   }
+			   else {
+				   moyenne = (image[j-1][i] + image[j+1][i])/2;
+			   }
+			   res[j][i] = Math.abs(moyenne - image[j][i]);
+		   }
+	   }
+	   
+	   return res;
+   }
+   
    public static int[][] interest(int[][] image){
 	   int[][] res = new int[image.length][image[0].length];
 	   int moyenne;
@@ -132,6 +154,40 @@ public class SeamCarving
 	   
 	   for(int i = 0 ; i < largeur ; i++) {
 		   graph.addEdge(new Edge(largeur*(hauteur-1)+i+1, graph.vertices()-1, itr[hauteur-1][i]));
+	   }
+	   return graph;
+   }
+   
+   public static Graph tographHorizontal(int[][] itr) { 
+	   int hauteur = itr.length;
+	   int largeur = itr[0].length;
+	   Graph graph = new Graph(largeur*hauteur+2); //+2 expliqué par départ + arriver
+	   
+	   for(int i = 0 ; i < hauteur ; i++)
+	   {
+		   graph.addEdge(new Edge(0, i+1, 0)); //from the top to the first floor
+	   }
+	   
+	   for(int i = 0 ; i < largeur-1 ; i++) {
+		   for(int j = 0 ; j < hauteur ; j++) {
+			   	if(j == 0){
+			   		graph.addEdge(new Edge(i*hauteur+1, (i+1)*hauteur+1, itr[j][i]));
+			   		graph.addEdge(new Edge(i*hauteur+1, (i+1)*hauteur+2, itr[j][i]));
+			   	}
+			   	else if(j == hauteur-1) {
+			   		graph.addEdge(new Edge(i*hauteur+1+j, (i+1)*hauteur+j, itr[j][i]));
+			   		graph.addEdge(new Edge(i*hauteur+1+j, (i+1)*hauteur+1+j, itr[j][i]));
+			   	}
+			   	else{
+			   		graph.addEdge(new Edge(i*hauteur+1+j, (i+1)*hauteur+j, itr[j][i]));
+			   		graph.addEdge(new Edge(i*hauteur+1+j, (i+1)*hauteur+1+j, itr[j][i]));
+			   		graph.addEdge(new Edge(i*hauteur+1+j, (i+1)*hauteur+2+j, itr[j][i]));
+			   	}
+		   }
+	   }
+	   
+	   for(int i = 0 ; i < hauteur ; i++) {
+		   graph.addEdge(new Edge(hauteur*(largeur-1)+i+1, graph.vertices()-1, itr[i][largeur-1]));
 	   }
 	   return graph;
    }
@@ -237,6 +293,41 @@ public class SeamCarving
 	   }
    }
  
+   public void reducePictHorizontal(String nameFile, boolean isAbsolutePath, int nbFois) {
+	   int[][] im = this.readpgm(nameFile, isAbsolutePath);
+	   if(nbFois >= im.length) {
+		   JOptionPane.showMessageDialog(null,
+				    "You are asking impossible things (too much times for the picture's size).",
+				    "Error",
+				    JOptionPane.ERROR_MESSAGE);
+	   }
+	   else {
+		   int[][] newIm = null;
+		   for(int r = 0 ; r < nbFois ; r++) {
+			   Graph graph = this.tographHorizontal(this.interestHorizontal(im));
+			   ArrayList<Integer> array = this.Dijkstra(graph, 0, graph.vertices()-1);
+			   newIm = new int[im.length-1][im[0].length];
+				
+		
+				int k;
+				int l = array.size()-1;
+				for(int i = 0 ; i < im[0].length ; i++) {
+					k = 0;
+					for(int j = 0 ; j < im.length ; j++) {
+						if(l > 0 && i*im.length+j == array.get(l-1)-1) {
+							l--;
+						}
+						else {
+							newIm[k][i] = im[j][i];
+							k++;
+						}
+					}
+				}
+				im = newIm;
+		   	}
+			writepgm(newIm, "monFichier.pgm");
+	   }
+   }
    
    /*public static void main(String... args){
 	   SeamCarving sc = new SeamCarving();
