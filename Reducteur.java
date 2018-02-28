@@ -26,17 +26,17 @@ public class Reducteur {
 		    		String[] selection = {"1","2","3","4","5","6","7","8","9"};
 			    	String retour = (String) JOptionPane.showInputDialog(null, "Choisissez un indice", "Boite de dialogue",JOptionPane.QUESTION_MESSAGE, null, selection, selection[0]);
 			    	if(retour != null) {
-			    		sc.reducePictHorizontal(chooser.getSelectedFile().getPath(), true, Integer.parseInt(retour));
+			    		sc.augmentation(chooser.getSelectedFile().getPath(), true, Integer.parseInt(retour));
 					JOptionPane.showMessageDialog(null, "Transformation de l'image terminé");
 			    	}
 		    }
 		}
 		else if(args.length == 1){
-			sc.reducePictHorizontal(args[0], false, 1);
+			sc.augmentation(args[0], false, 1);
 			JOptionPane.showMessageDialog(null, "Transformation de l'image terminé");
 		}
 		else if(args.length == 2) {
-			sc.reducePictHorizontal(args[0], false, Integer.parseInt(args[1]));
+			sc.augmentation(args[0], false, Integer.parseInt(args[1]));
 			JOptionPane.showMessageDialog(null, "Transformation de l'image terminé");
 		}
 		else {

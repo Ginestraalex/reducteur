@@ -58,6 +58,16 @@ public class Graph
         return list;
     }
    
+   public Edge edge(int from, int to) {
+	   for (Edge e : next(from)) {
+		   if (e.to == to) {
+			   return e;
+		   }
+	   }
+	   
+	   return null;
+   }
+   
    
    public void writeFile(String s)
 	 {

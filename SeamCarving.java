@@ -329,6 +329,150 @@ public class SeamCarving
 	   }
    }
    
+   
+   
+   public static void augmentation(String nameFile, boolean isAbsolutePath,int augmentation) {
+   	int[][] img = readpgm(nameFile,isAbsolutePath);
+   	
+   	if (augmentation < 0) {
+   		System.err.println("L'augmentation doit être positive sinon sélectionner réduction");
+   		System.exit(1);
+   	}
+   	
+   	augmentation(img, augmentation);
+   }
+   /*
+   public static void augmentation2(int[][] img, int augmentation) {
+   		int hauteur = img.length;
+	    int largeur = img[0].length;
+	    	    
+	    int source = largeur * hauteur;
+	    int arrive = source + 1;	    	   	    	   	    
+	    int[][] passage = new int[hauteur][largeur];
+	    
+	    for (int i = 0; i < hauteur; i ++) {
+		    	for(int j = 0 ; j < largeur ; j ++) {
+		    		passage[i][j] = 0;
+		    	}
+	    }
+	    
+	    int[][] itr = interest(img);
+	    Graph g = tograph(itr); 
+	    ArrayList<Integer> chemin = new ArrayList<Integer>();
+	    
+	    for (int i = 0; i < augmentation; i ++) {
+	    	
+		    	chemin = Dijkstra(g,source, arrive);	
+		    	
+		    	int dernier = chemin.get(0);
+		    	Edge e = g.edge(dernier, arrive);
+		    	
+		    	e.cost = Integer.MAX_VALUE;
+		    	
+		    	for (int j = 0; j < chemin.size(); j ++) {
+		    		int sommet = chemin.get(j);
+		    		int y = sommet / largeur;
+		    		int x = sommet % largeur;
+		    		
+		    		passage[y][x] ++;
+		    	}
+	    }
+
+	    int p3 = 0;
+	    int largeur2 = largeur + augmentation;
+	    int[][] img2 = new int[hauteur][largeur2];    
+	    
+	    for (int p1 = 0; p1 < hauteur ; p1 ++) {
+	    		for(int p2 = 0 ; p2 < largeur ; p2++) {
+	    				int copies = passage[p1][p2] + 1;	    
+	    	
+	    				for (int c = 0; c < copies; c ++) {
+	    					int y2 = p3 / largeur2;
+	    					int x2 = p3 % largeur2;
+		    	
+	    					img2[y2][x2] = img[p1][p2];		    	
+	    					p3 ++;
+	    				}	    	
+	    		}
+	    }
+	    
+	    writepgm(img2, "Augmentationfichier.pgm");
+   }
+   */
+   
+   public static void augmentation(int[][] im, int augmentation) {
+	   if(augmentation >= im.length) {
+		   JOptionPane.showMessageDialog(null,
+				    "You are asking impossible things (too much times for the picture's size).",
+				    "Error",
+				    JOptionPane.ERROR_MESSAGE);
+	   }
+	   else {
+		   int[][] newIm = null;
+		   for(int r = 0 ; r < augmentation ; r++) {
+			   
+			   	int[][] itr = interestHorizontal(im);
+			    Graph g = tograph(itr); 
+			    ArrayList<Integer> array = Dijkstra(g, 0, g.vertices()-1);
+			    newIm = new int[im.length+1][im[0].length];
+				
+		
+				int k;
+				int l = array.size()-1;
+				for(int i = 0 ; i < im[0].length ; i++) {
+					k = 0;
+					for(int j = 0 ; j < im.length ; j++) {
+						if(l > 0 && i*im.length+j == array.get(l-1)-1) {
+							l--;
+							newIm[k][i] = im[j][i];
+						}
+						else {
+							newIm[k][i] = im[j][i];
+							k++;
+						}
+					}
+				}
+				im = newIm;
+		   	}
+			writepgm(newIm, "monFichierAugmente.pgm");
+	   }
+   }
+   
+   // Fonction qui definit une zone importante
+   public static void dessinerZoneImportante(int[][] image, String name) {
+	   int[][] tabS = image ;
+	   /* Marquage de la zone importante */
+	   if(tabS.length > 40) {
+		   for (int x = 0 ;  x < tabS.length ; x++) {
+			   for (int y = 0 ; y < tabS[0].length ; y++) {
+				   if( x > (int)(tabS.length/4) && x < (tabS.length - (int)(tabS.length/4)) ) {
+					   tabS[x][y] = 255 ;
+				   }
+			   }
+		   }
+	   }
+	   // On affiche le resultat
+	   writepgm(tabS,"image_issue_selection_"+name);
+   }
+   
+   // Fonction qui definit une zone importante
+   public static void dessinerZoneImportanteVerticale(int[][] image, String name) {
+	   int[][] tabS = image ;
+	   /* Marquage de la zone importante */
+	   if(tabS[0].length > 40) {
+		   for (int x = 0 ;  x < tabS.length ; x++) {
+			   for (int y = 0 ; y < tabS[0].length ; y++) {
+				   if( x > (int)(tabS[0].length/4) && x < (tabS[0].length - (int)(tabS[0].length/4)) ) {
+					   tabS[x][y] = 255 ;
+				   }
+			   }
+		   }
+	   }
+	   // On affiche le resultat
+	   writepgm(tabS,"image_issue_selection_verticale_"+name);
+   }
+   
+   
    /*public static void main(String... args){
 	   SeamCarving sc = new SeamCarving();
 	   sc.reducePict("./image/test.pgm", false);
