@@ -52,7 +52,11 @@ public class SeamCarving
         }
         }
 
-	
+	/*
+	 * fonction qui creer un fichier
+	 * image a partir du tableau image 
+	 * qui passe en parametre
+	 */
    public static void writepgm(int[][] image, String filename){
 	   try {
 		   Writer writer = new BufferedWriter(new FileWriter(filename));
@@ -124,10 +128,17 @@ public class SeamCarving
    }
    
    
+   
+   /*
+    * fonction qui transforme un tableau itr
+    * contenant les valeurs d'importance d'une image
+    * en un graphe orienté pour supprimer des lignes
+    * de manière verticale
+    */
    public static Graph tograph(int[][] itr) { 
 	   int hauteur = itr.length;
 	   int largeur = itr[0].length;
-	   Graph graph = new Graph(largeur*hauteur+2); //+2 expliqué par départ + arriver
+	   Graph graph = new Graph(largeur*hauteur+2); //+2 expliqué par sommet départ + sommet arriver
 	   
 	   for(int i = 0 ; i < largeur ; i++)
 	   {
@@ -158,10 +169,76 @@ public class SeamCarving
 	   return graph;
    }
    
+  
+   /*
+    * fonction qui transforme un tableau itr
+    * contenant les valeurs d'importance d'une image
+    * en un graphe orienté pour supprimer des lignes
+    * de manière verticale
+    */
+   public static Graph tograph2(int[][] itr) { 
+	   int hauteur = itr.length;
+	   int largeur = itr[0].length;
+	   
+	   Graph graph = new Graph(largeur*(hauteur*2-2)); //hauteur * 2 pour la subdivision et -2 pour le sommet de depart et de fin
+	   
+	   for(int i = 0 ; i < largeur ; i++)
+	   {
+		   graph.addEdge(new Edge(0, i+1, 0)); //from the top to the first floor
+	   }
+	   
+	   for(int i = 0 ; i < hauteur-1 ; i++) {
+		   for(int j = 0 ; j < largeur ; j++) {
+			   /* cote gauche du graphe */
+			   	if(j == 0){ 
+			   		/* premiere ligne egal a 0 */
+			   		graph.addEdge(new Edge(2*i*largeur+1, (2*i+1)*largeur+1, 0));
+			   		graph.addEdge(new Edge(2*i*largeur+1, (2*i+1)*largeur+2, 0));
+			   		/* seconde ligne avec les valeurs de itr*/
+			   		graph.addEdge(new Edge((2*i+1)*largeur+1, (2*i+2)*largeur+1, itr[i][j]));
+			   		graph.addEdge(new Edge((2*i+1)*largeur+1, (2*i+2)*largeur+2, itr[i][j]));
+			   	}
+			   	/* partie droite du graphe */
+			   	else if(j == largeur-1) {
+			   		/* premiere ligne egale a 0 */
+			   		graph.addEdge(new Edge(2*i*largeur+1+j, (2*i+1)*largeur+j, 0));
+			   		graph.addEdge(new Edge(2*i*largeur+1+j, (2*i+1)*largeur+1+j, 0));
+			   		/* seconde ligne contenant les valeurs de itr */
+			   		graph.addEdge(new Edge((2*i+1)*largeur+1+j, (2*i+2)*largeur+j, itr[i][j]));
+			   		graph.addEdge(new Edge((2*i+1)*largeur+1+j, (2*i+2)*largeur+1+j, itr[i][j]));
+			   	}
+			   	/* partie centrale du graphe */
+			   	else{
+			   		/* premiere ligne egale a 0 */
+			   		graph.addEdge(new Edge(2*i*largeur+1+j, (2*i+1)*largeur+j, 0));
+			   		graph.addEdge(new Edge(2*i*largeur+1+j, (2*i+1)*largeur+1+j, 0));
+			   		graph.addEdge(new Edge(2*i*largeur+1+j, (2*i+1)*largeur+2+j, 0));
+			   		/* seconde ligne contenant les valeurs de itr */
+			   		graph.addEdge(new Edge((2*i+1)*largeur+1+j, (2*i+2)*largeur+j, itr[i][j]));
+			   		graph.addEdge(new Edge((2*i+1)*largeur+1+j, (2*i+2)*largeur+1+j, itr[i][j]));
+			   		graph.addEdge(new Edge((2*i+1)*largeur+1+j, (2*i+2)*largeur+2+j, itr[i][j]));
+			   	}
+		   }
+	   }
+	   
+	   for(int i = 0 ; i < largeur ; i++) {
+		   graph.addEdge(new Edge(largeur*(hauteur-1)+i+1, graph.vertices()-1, itr[hauteur-1][i]));
+	   }
+	   return graph;
+   }
+   
+   
+   
+   /*
+    * fonction qui transforme un tableau itr
+    * contenant les valeurs d'importance d'une image
+    * en un graphe orienté pour supprimer des lignes
+    * de manière horizontale
+    */
    public static Graph tographHorizontal(int[][] itr) { 
 	   int hauteur = itr.length;
 	   int largeur = itr[0].length;
-	   Graph graph = new Graph(largeur*hauteur+2); //+2 expliqué par départ + arriver
+	   Graph graph = new Graph(largeur*hauteur+2); //+2 expliqué par sommet départ + sommet arriver
 	   
 	   for(int i = 0 ; i < hauteur ; i++)
 	   {
