@@ -127,8 +127,7 @@ public class SeamCarving
 	   return res;
    }
    
-   
-   
+  
    /*
     * fonction qui transforme un tableau itr
     * contenant les valeurs d'importance d'une image
@@ -138,91 +137,63 @@ public class SeamCarving
    public static Graph tograph(int[][] itr) { 
 	   int hauteur = itr.length;
 	   int largeur = itr[0].length;
-	   Graph graph = new Graph(largeur*hauteur+2); //+2 expliqué par sommet départ + sommet arriver
+	   
+	   Graph graph = new Graph(largeur*(hauteur*2-2)+2); //hauteur * 2 pour la subdivision et -2 pour le sommet de depart et de fin
 	   
 	   for(int i = 0 ; i < largeur ; i++)
 	   {
 		   graph.addEdge(new Edge(0, i+1, 0)); //from the top to the first floor
 	   }
-	   
-	   for(int i = 0 ; i < hauteur-1 ; i++) {
-		   for(int j = 0 ; j < largeur ; j++) {
-			   	if(j == 0){
-			   		graph.addEdge(new Edge(i*largeur+1, (i+1)*largeur+1, itr[i][j]));
-			   		graph.addEdge(new Edge(i*largeur+1, (i+1)*largeur+2, itr[i][j]));
-			   	}
-			   	else if(j == largeur-1) {
-			   		graph.addEdge(new Edge(i*largeur+1+j, (i+1)*largeur+j, itr[i][j]));
-			   		graph.addEdge(new Edge(i*largeur+1+j, (i+1)*largeur+1+j, itr[i][j]));
-			   	}
-			   	else{
-			   		graph.addEdge(new Edge(i*largeur+1+j, (i+1)*largeur+j, itr[i][j]));
-			   		graph.addEdge(new Edge(i*largeur+1+j, (i+1)*largeur+1+j, itr[i][j]));
-			   		graph.addEdge(new Edge(i*largeur+1+j, (i+1)*largeur+2+j, itr[i][j]));
-			   	}
-		   }
-	   }
-	   
+	   /* premiere ligne	*/
 	   for(int i = 0 ; i < largeur ; i++) {
-		   graph.addEdge(new Edge(largeur*(hauteur-1)+i+1, graph.vertices()-1, itr[hauteur-1][i]));
+		   int sommet = i+1;
+		   if(i == 0){
+		   		graph.addEdge(new Edge(1, largeur+1, itr[0][i]));
+		   		graph.addEdge(new Edge(1, largeur+2, itr[0][i]));
+		   	}
+		   	else if(i == largeur-1) {
+		   		graph.addEdge(new Edge(sommet, largeur+sommet, itr[0][i]));
+		   		graph.addEdge(new Edge(sommet, largeur+sommet-1, itr[0][i]));
+		   	}
+		   	else{
+		   		graph.addEdge(new Edge(sommet, largeur+i, itr[0][i]));
+		   		graph.addEdge(new Edge(sommet, largeur+sommet, itr[0][i]));
+		   		graph.addEdge(new Edge(sommet, largeur+sommet+1, itr[0][i]));
+		   	}
 	   }
-	   return graph;
-   }
-   
-  
-   /*
-    * fonction qui transforme un tableau itr
-    * contenant les valeurs d'importance d'une image
-    * en un graphe orienté pour supprimer des lignes
-    * de manière verticale
-    */
-   public static Graph tograph2(int[][] itr) { 
-	   int hauteur = itr.length;
-	   int largeur = itr[0].length;
-	   
-	   Graph graph = new Graph(largeur*(hauteur*2-2)); //hauteur * 2 pour la subdivision et -2 pour le sommet de depart et de fin
-	   
-	   for(int i = 0 ; i < largeur ; i++)
-	   {
-		   graph.addEdge(new Edge(0, i+1, 0)); //from the top to the first floor
-	   }
-	   
-	   for(int i = 0 ; i < hauteur-1 ; i++) {
+	   /* lignes a doubler */
+	   for(int i = 1 ; i < hauteur-1 ; i++) {
 		   for(int j = 0 ; j < largeur ; j++) {
+			   int sommet = (2*i*largeur)+1+j;
 			   /* cote gauche du graphe */
 			   	if(j == 0){ 
 			   		/* premiere ligne egal a 0 */
-			   		graph.addEdge(new Edge(2*i*largeur+1, (2*i+1)*largeur+1, 0));
-			   		graph.addEdge(new Edge(2*i*largeur+1, (2*i+1)*largeur+2, 0));
+			   		graph.addEdge(new Edge(sommet-largeur, sommet, 0));
 			   		/* seconde ligne avec les valeurs de itr*/
-			   		graph.addEdge(new Edge((2*i+1)*largeur+1, (2*i+2)*largeur+1, itr[i][j]));
-			   		graph.addEdge(new Edge((2*i+1)*largeur+1, (2*i+2)*largeur+2, itr[i][j]));
+			   		graph.addEdge(new Edge(sommet, sommet+largeur, itr[i][j]));
+			   		graph.addEdge(new Edge(sommet, sommet+largeur+1, itr[i][j]));
 			   	}
 			   	/* partie droite du graphe */
 			   	else if(j == largeur-1) {
 			   		/* premiere ligne egale a 0 */
-			   		graph.addEdge(new Edge(2*i*largeur+1+j, (2*i+1)*largeur+j, 0));
-			   		graph.addEdge(new Edge(2*i*largeur+1+j, (2*i+1)*largeur+1+j, 0));
+			   		graph.addEdge(new Edge(sommet-largeur, sommet, 0));
 			   		/* seconde ligne contenant les valeurs de itr */
-			   		graph.addEdge(new Edge((2*i+1)*largeur+1+j, (2*i+2)*largeur+j, itr[i][j]));
-			   		graph.addEdge(new Edge((2*i+1)*largeur+1+j, (2*i+2)*largeur+1+j, itr[i][j]));
+			   		graph.addEdge(new Edge(sommet, sommet+largeur, itr[i][j]));
+			   		graph.addEdge(new Edge(sommet, sommet+largeur-1, itr[i][j]));
 			   	}
 			   	/* partie centrale du graphe */
 			   	else{
 			   		/* premiere ligne egale a 0 */
-			   		graph.addEdge(new Edge(2*i*largeur+1+j, (2*i+1)*largeur+j, 0));
-			   		graph.addEdge(new Edge(2*i*largeur+1+j, (2*i+1)*largeur+1+j, 0));
-			   		graph.addEdge(new Edge(2*i*largeur+1+j, (2*i+1)*largeur+2+j, 0));
+			   		graph.addEdge(new Edge(sommet-largeur, sommet, 0));
 			   		/* seconde ligne contenant les valeurs de itr */
-			   		graph.addEdge(new Edge((2*i+1)*largeur+1+j, (2*i+2)*largeur+j, itr[i][j]));
-			   		graph.addEdge(new Edge((2*i+1)*largeur+1+j, (2*i+2)*largeur+1+j, itr[i][j]));
-			   		graph.addEdge(new Edge((2*i+1)*largeur+1+j, (2*i+2)*largeur+2+j, itr[i][j]));
+			   		graph.addEdge(new Edge(sommet, sommet+largeur, itr[i][j]));
+			   		graph.addEdge(new Edge(sommet, sommet+largeur+1, itr[i][j]));
+			   		graph.addEdge(new Edge(sommet, sommet+largeur-1, itr[i][j]));
 			   	}
 		   }
 	   }
-	   
 	   for(int i = 0 ; i < largeur ; i++) {
-		   graph.addEdge(new Edge(largeur*(hauteur-1)+i+1, graph.vertices()-1, itr[hauteur-1][i]));
+		   graph.addEdge(new Edge(largeur*(hauteur*2-3)+i+1, graph.vertices()-1, itr[hauteur-1][i]));
 	   }
 	   return graph;
    }
