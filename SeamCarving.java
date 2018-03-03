@@ -419,7 +419,7 @@ public class SeamCarving
 				}
 				im = newIm;
 		   }
-		   writepgm(newIm, "monFichier.pgm");
+		   writepgm(newIm, getNomFichier());
 	   }
    }
  
@@ -481,21 +481,21 @@ public class SeamCarving
 					im = newIm;
 			   	}
 		   }
-			writepgm(newIm, "monFichier.pgm");
+			writepgm(newIm, getNomFichier());
 	   }
    }
    
    
    
    public static void augmentationHorizontal(String nameFile, boolean isAbsolutePath,int augmentation) {
-   	int[][] img = readpgm(nameFile,isAbsolutePath);
-   	
-   	if (augmentation < 0) {
-   		System.err.println("L'augmentation doit être positive sinon sélectionner réduction");
-   		System.exit(1);
-   	}
-   	
-   	augmentationHorizontal(img, augmentation);
+	   	int[][] img = readpgm(nameFile,isAbsolutePath);
+	   	
+	   	if (augmentation < 0) {
+	   		System.err.println("L'augmentation doit être positive sinon sélectionner réduction");
+	   		System.exit(1);
+	   	}
+	   	
+	   	augmentationHorizontal(img, augmentation);
    }
    
    
@@ -533,7 +533,7 @@ public class SeamCarving
 				}
 				im = newIm;
 		   	}
-			writepgm(newIm, "monFichierAugmenteHorizontalement.pgm");
+			writepgm(newIm, getNomFichier());
 	   }
    }
    
@@ -583,7 +583,7 @@ public class SeamCarving
 						}
 					im = newIm;
 			   	}
-				writepgm(newIm, "monFichierAugmenteVerticalement.pgm");
+				writepgm(newIm, getNomFichier());
 		   }
 	   }
    
@@ -608,7 +608,7 @@ public class SeamCarving
    
    
    // Fonction qui definit une zone importante
-   public static void dessinerZoneImportante(String nameFile, boolean isAbsolutePath,int reduction,String name,int x1, int x2, int y1, int y2) {
+   public static void dessinerZoneImportante(String nameFile, boolean isAbsolutePath,int reduction, int x1, int x2, int y1, int y2) {
 	   int[][] tabS = readpgm(nameFile,isAbsolutePath) ;
 	   /* Marquage de la zone importante */
 		   for (int i = x1 ;  i <= x2 ; i++) {
@@ -622,7 +622,7 @@ public class SeamCarving
    
    
    // Fonction qui definit une zone à supprimer horizontalement
-   public static void supprimerZoneHorizontal(String nameFile, boolean isAbsolutePath,int reduction, String name,int x , int y) {
+   public static void supprimerZoneHorizontal(String nameFile, boolean isAbsolutePath,int reduction, int x , int y) {
 	   int[][] tabS = readpgm(nameFile,isAbsolutePath);
 	   /* Marquage de la zone à supprimer */
 		   for (int i = x ;  i <= y ; i++) {
@@ -631,13 +631,14 @@ public class SeamCarving
 			   }
 		   }
 	   // On affiche le resultat
-	   writepgm(tabS,nameFile);
+	   writepgm(tabS, nameFile);
 	   // Puis on réalise la réduction
 	   reducePictHorizontal(nameFile,isAbsolutePath,reduction);
    }
    
+   
    // Fonction qui definit une zone à supprimer verticalement
-   public static void supprimerZoneVertical(String nameFile, boolean isAbsolutePath,int reduction, String name, int x, int y) {
+   public static void supprimerZoneVertical(String nameFile, boolean isAbsolutePath,int reduction, int x, int y) {
 	   int[][] tabS = readpgm(nameFile,isAbsolutePath) ;
 	   /* Marquage de la zone à supprimer */
 		   for (int i = x ;  i < y ; i++) {
@@ -646,11 +647,18 @@ public class SeamCarving
 			   }
 		   }
 	   // On affiche le resultat
-	   writepgm(tabS,nameFile);
+	   writepgm(tabS,getNomFichier());
 	// Puis on réalise la réduction
 	   reducePict(nameFile,isAbsolutePath,reduction);
    }
-   
+
+   public static String getNomFichier() {
+	   String nom = JOptionPane.showInputDialog(null,"Quel nom voulez vous donner a votre fichier ?", "Nom fichier", JOptionPane.QUESTION_MESSAGE);
+	   if(nom != null) {
+		   return nom+".pgm";
+	   }
+	   return "monFichier.pgm";
+   }
 }
 
 
