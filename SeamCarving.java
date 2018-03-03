@@ -241,6 +241,36 @@ public class SeamCarving
    }
    
    
+   public ArrayList<Edge> twopath(Graph g, int s, int t){
+	   int edgeTemp;
+	   ArrayList<Edge> listeRes = Dijkstra1(g, s, t);
+	   Iterable<Edge> listeEdgeGraph = g.edges();
+	   for(Edge e : listeEdgeGraph) {
+		   if(listeRes.contains(e)) {
+			   System.out.println("from: "+e.from+" to: "+e.to);
+			   edgeTemp = e.to;
+			   e.to = e.from;
+			   e.from = edgeTemp;
+		   }
+	   }
+	   ArrayList<Edge> liste2 = Dijkstra1(g, s, t);
+	   for(Edge e : listeEdgeGraph) {
+		   if(liste2.contains(e)) {
+			   System.out.println("from: "+e.from+" to: "+e.to);
+			   edgeTemp = e.to;
+			   e.to = e.from;
+			   e.from = edgeTemp;
+		   }
+	   }
+	   for(Edge e : liste2) {
+		   if(!listeRes.contains(e)) {
+			   listeRes.add(e);
+		   }
+	   }
+	   return listeRes;
+   }
+   
+   
    public static ArrayList<Edge> Dijkstra1(Graph g, int s, int t) {
 	   ArrayList<Edge> chemin= new ArrayList<Edge>();
 	   Heap hp = new Heap(g.vertices());
