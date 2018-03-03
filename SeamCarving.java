@@ -606,51 +606,169 @@ public class SeamCarving
 	   writepgm(tabS,"image_issue_selection_"+name);
    }
    
-   
+
    // Fonction qui definit une zone importante
-   public static void dessinerZoneImportante(String nameFile, boolean isAbsolutePath,int reduction, int x1, int x2, int y1, int y2) {
+   public static void dessinerZoneImportante(String nameFile, boolean isAbsolutePath,int nbFois,int x1, int x2, int y1, int y2) {
 	   int[][] tabS = readpgm(nameFile,isAbsolutePath) ;
-	   /* Marquage de la zone importante */
+		   int[][] im = SeamCarving.readpgm(nameFile, isAbsolutePath);
+		   /* Marquage de la zone importante */
 		   for (int i = x1 ;  i <= x2 ; i++) {
 			   for (int j = y1 ; j <= y2 ; j++) {
 					   tabS[i][j] = 254 ;
 			   }
 		   }
-	   // On affiche le resultat
-	   writepgm(tabS,nameFile);
+			   int[][] newIm = null;
+				   	Graph graph = SeamCarving.tographHorizontal(SeamCarving.interestHorizontal(im));
+				   	ArrayList<Edge> array = SeamCarving.twopath(graph, 0, graph.vertices()-1);
+			   		newIm = new int[im.length-2][im[0].length];
+					int k;
+					
+					for(int i = 0 ; i < im[0].length ; i++) {
+						for(int j = 0 ; j < im.length ; j++) {
+								newIm[j][i] = im[j][i];
+						}
+					}
+					im = newIm;
+				writepgm(newIm, "monFichier.pgm");
    }
    
    
    // Fonction qui definit une zone à supprimer horizontalement
-   public static void supprimerZoneHorizontal(String nameFile, boolean isAbsolutePath,int reduction, int x , int y) {
-	   int[][] tabS = readpgm(nameFile,isAbsolutePath);
-	   /* Marquage de la zone à supprimer */
+   public static void supprimerZoneHorizontal(String nameFile, boolean isAbsolutePath,int nbFois,int x , int y) {
+		   int[][] im = SeamCarving.readpgm(nameFile, isAbsolutePath);
 		   for (int i = x ;  i <= y ; i++) {
-			   for (int j = 0 ; j < tabS[0].length ; j++) {
-					   tabS[i][j] = 0 ;
+			   for (int j = 0 ; j < im[0].length ; j++) {
+					   im[i][j] = 0 ;
 			   }
 		   }
-	   // On affiche le resultat
-	   writepgm(tabS, nameFile);
-	   // Puis on réalise la réduction
-	   reducePictHorizontal(nameFile,isAbsolutePath,reduction);
+		   if(nbFois >= im.length) {
+			   JOptionPane.showMessageDialog(null,
+					    "Vous demandez une action impossible:\ntrop grand nombre de pixel a reduire pour la taille de l'image.",
+					    "Error",
+					    JOptionPane.ERROR_MESSAGE);
+		   }
+		   else {
+			   int[][] newIm = null;
+			   for(int r = 0 ; r < nbFois/2 ; r++) {
+				   	Graph graph = SeamCarving.tographHorizontal(SeamCarving.interestHorizontal(im));
+				   	ArrayList<Edge> array = SeamCarving.twopath(graph, 0, graph.vertices()-1);
+			   		newIm = new int[im.length-2][im[0].length];
+					int k;
+					
+					for(int i = 0 ; i < im[0].length ; i++) {
+						k = 0;
+						for(int j = 0 ; j < im.length ; j++) {
+							boolean ajouter = true;
+							for(Edge e : array) {
+								if(e.to == i*im.length+j) {
+									ajouter = false;
+								}
+							}
+							if(ajouter) {
+								newIm[k][i] = im[j][i];
+								k++;
+							}
+						}
+					}
+					im = newIm;
+			   	}
+			   
+			   if(nbFois%2 != 0) {
+				   for(int r = 0 ; r < nbFois ; r++) {
+					   Graph graph = SeamCarving.tographHorizontal(SeamCarving.interestHorizontal(im));
+					   ArrayList<Integer> array = SeamCarving.Dijkstra(graph, 0, graph.vertices()-1);
+					   newIm = new int[im.length-1][im[0].length];
+						
+				
+						int k;
+						int l = array.size()-1;
+						for(int i = 0 ; i < im[0].length ; i++) {
+							k = 0;
+							for(int j = 0 ; j < im.length ; j++) {
+								if(l > 0 && i*im.length+j == array.get(l-1)-1) {
+									l--;
+								}
+								else {
+									newIm[k][i] = im[j][i];
+									k++;
+								}
+							}
+						}
+						im = newIm;
+				   	}
+			   }
+				writepgm(newIm, "monFichier.pgm");
+		   }
    }
    
    
    // Fonction qui definit une zone à supprimer verticalement
-   public static void supprimerZoneVertical(String nameFile, boolean isAbsolutePath,int reduction, int x, int y) {
-	   int[][] tabS = readpgm(nameFile,isAbsolutePath) ;
-	   /* Marquage de la zone à supprimer */
+   public static void supprimerZoneVertical(String nameFile, boolean isAbsolutePath,int nbFois, int x, int y) {
+		   int[][] im = SeamCarving.readpgm(nameFile, isAbsolutePath);
+		   /* Marquage de la zone à supprimer */
 		   for (int i = x ;  i < y ; i++) {
-			   for (int j = 0 ; j < tabS.length ; j++) {
-					   tabS[j][i] = 0 ;
+			   for (int j = 0 ; j < im.length ; j++) {
+					   im[j][i] = 0 ;
 			   }
 		   }
-	   // On affiche le resultat
-	   writepgm(tabS,getNomFichier());
-	// Puis on réalise la réduction
-	   reducePict(nameFile,isAbsolutePath,reduction);
+		   if(nbFois >= im[0].length) {
+			   JOptionPane.showMessageDialog(null,
+					    "Vous demandez une action impossible:\ntrop grand nombre de pixel a reduire pour la taille de l'image.",
+					    "Error",
+					    JOptionPane.ERROR_MESSAGE);
+		   }
+		   else {
+			   int[][] newIm = null;
+			   for(int r = 0 ; r < nbFois/2 ; r++) {
+	   				Graph graph = SeamCarving.tograph(SeamCarving.interest(im));
+	   				ArrayList<Edge> array = SeamCarving.twopath(graph, 0, graph.vertices()-1);
+					newIm = new int[im.length][im[0].length-2];
+			
+					int k;
+					for(int i = 0 ; i < im.length ; i++) {
+						k = 0;
+						for(int j = 0 ; j < im[0].length ; j++) {
+							boolean ajouter = true;
+							for(Edge e : array) {
+								if(e.to-1 == i*im[0].length+j) {
+									ajouter = false;
+								}
+							}
+							if(ajouter) {
+								newIm[i][k] = im[i][j];
+								k++;
+							}
+						}
+					}
+					im = newIm;
+			   	}
+			   
+			   if(nbFois%2 != 0) {
+				   Graph graph = SeamCarving.tograph(SeamCarving.interest(im));
+				   ArrayList<Integer> array = SeamCarving.Dijkstra(graph, 0, graph.vertices()-1);
+				   newIm = new int[im.length][im[0].length-1];
+			
+					int k;
+					int l = array.size()-1;
+					for(int i = 0 ; i < im.length ; i++) {
+						k = 0;
+						for(int j = 0 ; j < im[0].length ; j++) {
+							if(l > 0 && i*im[0].length+j == array.get(l-1)-1) {
+								l--;
+							}
+							else {
+								newIm[i][k] = im[i][j];
+								k++;
+							}
+						}
+					}
+					im = newIm;
+			   }
+			   writepgm(newIm, "monFichier.pgm");
+		   }
    }
+   
+
 
    public static String getNomFichier() {
 	   String nom = JOptionPane.showInputDialog(null,"Quel nom voulez vous donner a votre fichier ?", "Nom fichier", JOptionPane.QUESTION_MESSAGE);

@@ -1,3 +1,5 @@
+package reducteur;
+
 
 import java.awt.Dimension;
 import java.awt.GridLayout;
