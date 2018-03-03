@@ -47,9 +47,15 @@ public class Reducteur extends JFrame{
 	    if(chemin != null) {
 	    		int nbPixel = this.selectionNbPixels();
 	    		if(nbPixel != 0) {
-    				SeamCarving.augmentation(chemin, true, nbPixel);
-    				JOptionPane.showMessageDialog(null, "Transformation de l'image terminé");
-	    			
+	    			String orientation = selectionOrientation();
+	    			if(orientation != null && orientation.equals("Verticale")) {
+	    				SeamCarving.augmentationVertical(chemin, true, nbPixel);
+	    				JOptionPane.showMessageDialog(null, "Transformation de l'image terminé");
+	    			}
+	    			else if(orientation != null) {
+	    				SeamCarving.augmentationHorizontal(chemin, true, nbPixel);
+	    				JOptionPane.showMessageDialog(null, "Transformation de l'image terminé");
+	    			}
     			}
 	    }
 	}
@@ -79,6 +85,13 @@ public class Reducteur extends JFrame{
 		String retour = (String) JOptionPane.showInputDialog(null, "Choisissez l'orientation de la modification:", "Boite de dialogue",JOptionPane.QUESTION_MESSAGE, null, selection, selection[0]);
 		return retour;
 	}
+	
+	public String selectionZone() {
+		String[] selection = {"A conserver", "A supprimer"};
+		String retour = (String) JOptionPane.showInputDialog(null, "Choisissez la zone de l'action:", "Boite de dialogue",JOptionPane.QUESTION_MESSAGE, null, selection, selection[0]);
+		return retour;
+	}
+	
 	
 	public String selectionFichier() {
 		JFileChooser chooser = new JFileChooser();
