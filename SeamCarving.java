@@ -199,7 +199,6 @@ public class SeamCarving
    }
    
    
-   
    /*
     * fonction qui transforme un tableau itr
     * contenant les valeurs d'importance d'une image
@@ -209,45 +208,76 @@ public class SeamCarving
    public static Graph tographHorizontal(int[][] itr) { 
 	   int hauteur = itr.length;
 	   int largeur = itr[0].length;
-	   Graph graph = new Graph(largeur*hauteur+2); //+2 expliqué par sommet départ + sommet arriver
+	   Graph graph = new Graph((largeur*2-2)*hauteur+2); //largeur * 2 pour la subdivision et -2 pour le sommet de depart et de fin
 	   
+	   /* ligne depart */
 	   for(int i = 0 ; i < hauteur ; i++)
 	   {
 		   graph.addEdge(new Edge(0, i+1, 0)); //from the top to the first floor
 	   }
 	   
-	   for(int i = 0 ; i < largeur-1 ; i++) {
+	   /* premiere ligne */
+	   for(int i = 0 ; i < hauteur ; i++) {
+		   int sommet = i+1;
+		   if(i == 0){
+		   		graph.addEdge(new Edge(1, hauteur+1, itr[i][0]));
+		   		graph.addEdge(new Edge(1, hauteur+2, itr[i][0]));
+		   	}
+		   	else if(i == largeur-1) {
+		   		graph.addEdge(new Edge(sommet, hauteur+sommet, itr[i][0]));
+		   		graph.addEdge(new Edge(sommet, hauteur+sommet-1, itr[i][0]));
+		   	}
+		   	else{
+		   		graph.addEdge(new Edge(sommet, hauteur+i, itr[i][0]));
+		   		graph.addEdge(new Edge(sommet, hauteur+sommet, itr[i][0]));
+		   		graph.addEdge(new Edge(sommet, hauteur+sommet+1, itr[i][0]));
+		   	}
+	   }
+	   
+	   /* lignes a doubler */
+	   for(int i = 1 ; i < largeur-1 ; i++) {
 		   for(int j = 0 ; j < hauteur ; j++) {
+			   int sommet = 2*i*hauteur+1+j;
 			   	if(j == 0){
-			   		graph.addEdge(new Edge(i*hauteur+1, (i+1)*hauteur+1, itr[j][i]));
-			   		graph.addEdge(new Edge(i*hauteur+1, (i+1)*hauteur+2, itr[j][i]));
+			   		/* premiere ligne egale a 0 */
+			   		graph.addEdge(new Edge(sommet-hauteur, sommet, 0));
+			   		/* seconde ligne contenant les valeurs de itr */
+			   		graph.addEdge(new Edge(sommet, sommet+hauteur, itr[j][i]));
+			   		graph.addEdge(new Edge(sommet, sommet+hauteur+1, itr[j][i]));
 			   	}
 			   	else if(j == hauteur-1) {
-			   		graph.addEdge(new Edge(i*hauteur+1+j, (i+1)*hauteur+j, itr[j][i]));
-			   		graph.addEdge(new Edge(i*hauteur+1+j, (i+1)*hauteur+1+j, itr[j][i]));
+			   		/* premiere ligne egale a 0 */
+			   		graph.addEdge(new Edge(sommet-hauteur, sommet, 0));
+			   		/* seconde ligne contenant les valeurs de itr */
+			   		graph.addEdge(new Edge(sommet, sommet+hauteur-1, itr[j][i]));
+			   		graph.addEdge(new Edge(sommet, sommet+hauteur, itr[j][i]));
 			   	}
 			   	else{
-			   		graph.addEdge(new Edge(i*hauteur+1+j, (i+1)*hauteur+j, itr[j][i]));
-			   		graph.addEdge(new Edge(i*hauteur+1+j, (i+1)*hauteur+1+j, itr[j][i]));
-			   		graph.addEdge(new Edge(i*hauteur+1+j, (i+1)*hauteur+2+j, itr[j][i]));
+			   		/* premiere ligne egale a 0 */
+			   		graph.addEdge(new Edge(sommet-hauteur, sommet, 0));
+			   		/* seconde ligne contenant les valeurs de itr */
+			   		graph.addEdge(new Edge(sommet, sommet+hauteur-1, itr[j][i]));
+			   		graph.addEdge(new Edge(sommet, sommet+hauteur, itr[j][i]));
+			   		graph.addEdge(new Edge(sommet, sommet+hauteur+1, itr[j][i]));
 			   	}
 		   }
 	   }
 	   
+	   /* derniere ligne */
 	   for(int i = 0 ; i < hauteur ; i++) {
-		   graph.addEdge(new Edge(hauteur*(largeur-1)+i+1, graph.vertices()-1, itr[i][largeur-1]));
+		   graph.addEdge(new Edge(hauteur*(largeur*2-3)+i+1, graph.vertices()-1, itr[i][largeur-1]));
 	   }
 	   return graph;
    }
    
    
-   public ArrayList<Edge> twopath(Graph g, int s, int t){
+   
+   public static ArrayList<Edge> twopath(Graph g, int s, int t){
 	   int edgeTemp;
 	   ArrayList<Edge> listeRes = Dijkstra1(g, s, t);
 	   Iterable<Edge> listeEdgeGraph = g.edges();
 	   for(Edge e : listeEdgeGraph) {
 		   if(listeRes.contains(e)) {
-			   System.out.println("from: "+e.from+" to: "+e.to);
 			   edgeTemp = e.to;
 			   e.to = e.from;
 			   e.from = edgeTemp;
@@ -256,7 +286,6 @@ public class SeamCarving
 	   ArrayList<Edge> liste2 = Dijkstra1(g, s, t);
 	   for(Edge e : listeEdgeGraph) {
 		   if(liste2.contains(e)) {
-			   System.out.println("from: "+e.from+" to: "+e.to);
 			   edgeTemp = e.to;
 			   e.to = e.from;
 			   e.from = edgeTemp;
@@ -335,21 +364,44 @@ public class SeamCarving
    }
    
    
-   public void reducePict(String nameFile, boolean isAbsolutePath, int nbFois) {
-	   int[][] im = this.readpgm(nameFile, isAbsolutePath);
+   public static void reducePict(String nameFile, boolean isAbsolutePath, int nbFois) {
+	   int[][] im = SeamCarving.readpgm(nameFile, isAbsolutePath);
 	   if(nbFois >= im[0].length) {
 		   JOptionPane.showMessageDialog(null,
-				    "You are asking impossible things (too much times for the picture's size).",
+				    "Vous demandez une action impossible:\ntrop grand nombre de pixel a reduire pour la taille de l'image.",
 				    "Error",
 				    JOptionPane.ERROR_MESSAGE);
 	   }
 	   else {
 		   int[][] newIm = null;
-		   for(int r = 0 ; r < nbFois ; r++) {
-			   Graph graph = this.tograph(this.interest(im));
-			   ArrayList<Integer> array = this.Dijkstra(graph, 0, graph.vertices()-1);
+		   for(int r = 0 ; r < nbFois/2 ; r++) {
+   				Graph graph = SeamCarving.tograph(SeamCarving.interest(im));
+   				ArrayList<Edge> array = SeamCarving.twopath(graph, 0, graph.vertices()-1);
+				newIm = new int[im.length][im[0].length-2];
+		
+				int k;
+				for(int i = 0 ; i < im.length ; i++) {
+					k = 0;
+					for(int j = 0 ; j < im[0].length ; j++) {
+						boolean ajouter = true;
+						for(Edge e : array) {
+							if(e.to-1 == i*im[0].length+j) {
+								ajouter = false;
+							}
+						}
+						if(ajouter) {
+							newIm[i][k] = im[i][j];
+							k++;
+						}
+					}
+				}
+				im = newIm;
+		   	}
+		   
+		   if(nbFois%2 != 0) {
+			   Graph graph = SeamCarving.tograph(SeamCarving.interest(im));
+			   ArrayList<Integer> array = SeamCarving.Dijkstra(graph, 0, graph.vertices()-1);
 			   newIm = new int[im.length][im[0].length-1];
-				
 		
 				int k;
 				int l = array.size()-1;
@@ -366,36 +418,37 @@ public class SeamCarving
 					}
 				}
 				im = newIm;
-		   	}
-			writepgm(newIm, "monFichier.pgm");
+		   }
+		   writepgm(newIm, "monFichier.pgm");
 	   }
    }
  
-   public void reducePictHorizontal(String nameFile, boolean isAbsolutePath, int nbFois) {
-	   int[][] im = this.readpgm(nameFile, isAbsolutePath);
+   public static void reducePictHorizontal(String nameFile, boolean isAbsolutePath, int nbFois) {
+	   int[][] im = SeamCarving.readpgm(nameFile, isAbsolutePath);
 	   if(nbFois >= im.length) {
 		   JOptionPane.showMessageDialog(null,
-				    "You are asking impossible things (too much times for the picture's size).",
+				    "Vous demandez une action impossible:\ntrop grand nombre de pixel a reduire pour la taille de l'image.",
 				    "Error",
 				    JOptionPane.ERROR_MESSAGE);
 	   }
 	   else {
 		   int[][] newIm = null;
-		   for(int r = 0 ; r < nbFois ; r++) {
-			   Graph graph = this.tographHorizontal(this.interestHorizontal(im));
-			   ArrayList<Integer> array = this.Dijkstra(graph, 0, graph.vertices()-1);
-			   newIm = new int[im.length-1][im[0].length];
-				
-		
+		   for(int r = 0 ; r < nbFois/2 ; r++) {
+			   	Graph graph = SeamCarving.tographHorizontal(SeamCarving.interestHorizontal(im));
+			   	ArrayList<Edge> array = SeamCarving.twopath(graph, 0, graph.vertices()-1);
+		   		newIm = new int[im.length-2][im[0].length];
 				int k;
-				int l = array.size()-1;
+				
 				for(int i = 0 ; i < im[0].length ; i++) {
 					k = 0;
 					for(int j = 0 ; j < im.length ; j++) {
-						if(l > 0 && i*im.length+j == array.get(l-1)-1) {
-							l--;
+						boolean ajouter = true;
+						for(Edge e : array) {
+							if(e.to == i*im.length+j) {
+								ajouter = false;
+							}
 						}
-						else {
+						if(ajouter) {
 							newIm[k][i] = im[j][i];
 							k++;
 						}
@@ -403,6 +456,31 @@ public class SeamCarving
 				}
 				im = newIm;
 		   	}
+		   
+		   if(nbFois%2 != 0) {
+			   for(int r = 0 ; r < nbFois ; r++) {
+				   Graph graph = SeamCarving.tographHorizontal(SeamCarving.interestHorizontal(im));
+				   ArrayList<Integer> array = SeamCarving.Dijkstra(graph, 0, graph.vertices()-1);
+				   newIm = new int[im.length-1][im[0].length];
+					
+			
+					int k;
+					int l = array.size()-1;
+					for(int i = 0 ; i < im[0].length ; i++) {
+						k = 0;
+						for(int j = 0 ; j < im.length ; j++) {
+							if(l > 0 && i*im.length+j == array.get(l-1)-1) {
+								l--;
+							}
+							else {
+								newIm[k][i] = im[j][i];
+								k++;
+							}
+						}
+					}
+					im = newIm;
+			   	}
+		   }
 			writepgm(newIm, "monFichier.pgm");
 	   }
    }
