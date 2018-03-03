@@ -1,4 +1,3 @@
-package reducteur;
 
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -18,10 +17,11 @@ import reducteur.SeamCarving;
 public class Reducteur extends JFrame{
 	
 	public Reducteur() {
-		setPreferredSize(new Dimension(400,100));
-		this.setLayout(new GridLayout(1,2));
+		setPreferredSize(new Dimension(500,100));
+		this.setLayout(new GridLayout(1,3));
 		JButton agrandire = new JButton("Agrandissement");
-		JButton reduire = new JButton("Reduction");
+		JButton reduire = new JButton("Réduction");
+		JButton zone = new JButton("Reduction Zone Ciblé");
 		agrandire.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -36,8 +36,18 @@ public class Reducteur extends JFrame{
 			}
 		});
 		
+		zone.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				reductionZone();
+			}
+			
+		});
+		
 		add(reduire);
 		add(agrandire);
+		add(zone);
 		this.pack();
 		setVisible(true);
 	}
@@ -78,6 +88,51 @@ public class Reducteur extends JFrame{
 	    }
 	}
 	    
+	
+	public void reductionZone() {
+		String chemin = selectionFichier();
+	    if(chemin != null) {
+	    		int nbPixel = selectionNbPixels();
+	    		if(nbPixel != 0) {
+		    		String coordx = JOptionPane.showInputDialog(null,"Veuillez entrez la coordonnée x1 qui sera le haut/gauche le zone de suppression", "Informations Requises", JOptionPane.QUESTION_MESSAGE);
+		    		if(coordx != null) {
+			    		String coordy = JOptionPane.showInputDialog(null,"Veuillez entrez la coordonnée x2 qui sera le bas/droite le zone de suppression", "Informations Requises", JOptionPane.QUESTION_MESSAGE);
+			    		if(coordy != null) {
+			    			String orientation = selectionOrientation();
+			    			if(orientation != null && orientation.equals("Verticale")) {
+			    				SeamCarving.supprimerZoneVertical(chemin, true, nbPixel, Integer.parseInt(coordx), Integer.parseInt(coordy));
+			    			}
+			    			else if(orientation != null) {
+			    				SeamCarving.supprimerZoneHorizontal(chemin, true, nbPixel, Integer.parseInt(coordx), Integer.parseInt(coordy));
+			    			}
+			    		}
+		    		}
+	    		}
+	    }
+	}
+	
+	
+	public void dessinerZoneImportante() {
+		String chemin = selectionFichier();
+	    if(chemin != null) {
+	    		int nbPixel = selectionNbPixels();
+	    		if(nbPixel != 0) {
+		    		String coordx1 = JOptionPane.showInputDialog(null,"Veuillez entrez la coordonnée x1 qui sera le x du coin haut gauche le zone de suppression", "Informations Requises", JOptionPane.QUESTION_MESSAGE);
+		    		if(coordx1 != null) {
+			    		String coordy1 = JOptionPane.showInputDialog(null,"Veuillez entrez la coordonnée y1 qui sera le y du coin haut gauche le zone de suppression", "Informations Requises", JOptionPane.QUESTION_MESSAGE);
+			    		if(coordy1 != null) {
+				    		String coordx2 = JOptionPane.showInputDialog(null,"Veuillez entrez la coordonnée x2 qui sera le x du coin bas droit le zone de suppression", "Informations Requises", JOptionPane.QUESTION_MESSAGE);
+		    				if(coordx2 != null) {
+		    					String coordy2 = JOptionPane.showInputDialog(null,"Veuillez entrez la coordonnée x2 qui sera le x du coin bas droit le zone de suppression", "Informations Requises", JOptionPane.QUESTION_MESSAGE);
+		    					if(coordy2 != null) {
+					    			SeamCarving.dessinerZoneImportante(chemin, true, nbPixel, Integer.parseInt(coordx1), Integer.parseInt(coordx2), Integer.parseInt(coordy1), Integer.parseInt(coordy2));
+		    					}
+		    				}
+			    		}
+		    		}
+	    		}
+	    }
+	}
 	
 	public String selectionOrientation() {
 		String[] selection = {"Horizontale", "Verticale"};
